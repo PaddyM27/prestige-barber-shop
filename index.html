@@ -319,21 +319,36 @@
       text-align: center; padding: 9rem 2rem 0; overflow: hidden;
     }
     .hero-bg {
-      position: absolute; inset: -10%;
-      background: url('prestige.jpg') center 50%/cover no-repeat;
+      position: absolute; inset: 0;
+      overflow: hidden;
+    }
+    .hero-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      filter: brightness(0.52) saturate(0.7) sepia(0.15) contrast(1.08);
       will-change: transform;
-      filter: brightness(0.44) saturate(0.62) sepia(0.22) contrast(1.1);
+    }
+    .hero-gradient-top {
+      position: absolute; top: 0; left: 0; right: 0; height: 35%;
+      background: linear-gradient(to bottom, rgba(8,7,5,1) 0%, rgba(8,7,5,0.6) 50%, transparent 100%);
+      z-index: 1; pointer-events: none;
+    }
+    .hero-gradient-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+      background: linear-gradient(to top, rgba(8,7,5,1) 0%, rgba(8,7,5,0.75) 40%, transparent 100%);
+      z-index: 1; pointer-events: none;
+    }
+    .hero-gradient-sides {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(8,7,5,0.35) 0%, transparent 20%, transparent 80%, rgba(8,7,5,0.35) 100%);
+      z-index: 1; pointer-events: none;
     }
     .hero-overlay {
-      position: absolute; inset: 0;
+      position: absolute; inset: 0; z-index: 2;
       background:
-        radial-gradient(ellipse at 30% 60%, rgba(139,60,40,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 70% 30%, rgba(201,168,76,0.06) 0%, transparent 50%),
-        linear-gradient(180deg,
-          rgba(8,7,5,0.45) 0%,
-          rgba(8,7,5,0.5) 25%,
-          rgba(8,7,5,0.72) 65%,
-          rgba(8,7,5,1.00) 100%);
+        radial-gradient(ellipse at 30% 60%, rgba(139,60,40,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 30%, rgba(201,168,76,0.05) 0%, transparent 50%);
     }
     .hero-content { position: relative; z-index: 2; }
 
@@ -1176,7 +1191,16 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-bg" id="heroBg">
+      <video class="hero-video" id="heroVideo"
+        autoplay muted loop playsinline preload="auto"
+        aria-hidden="true">
+        <source src="hero.mov" type="video/mp4">
+      </video>
+      <div class="hero-gradient-top"></div>
+      <div class="hero-gradient-bottom"></div>
+      <div class="hero-gradient-sides"></div>
+    </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Est. Kingscourt &nbsp;&middot;&nbsp; Co. Cavan</p>
@@ -1323,7 +1347,7 @@
 
   <!-- Photo Strip -->
   <div class="photo-strip">
-    <div class="photo-strip-bg" style="background-image:url('iamge 2.jpg')"></div>
+    <div class="photo-strip-bg" style="background-image:url('IMG_1392.jpg')"></div>
     <div class="photo-strip-overlay"></div>
     <div class="photo-strip-text">
       <span class="photo-strip-label">Est. Kingscourt</span>
@@ -1340,10 +1364,10 @@
         <div class="rule c"></div>
       </div>
       <div class="gallery-grid">
-        <div class="gi rev d1"><img src="image 1.jpg"  alt="Prestige Barbers — fade with curly texture" loading="lazy"></div>
-        <div class="gi rev d2"><img src="iamge 2.jpg"  alt="Prestige Barbers — fade with carved design" loading="lazy"></div>
-        <div class="gi rev d3"><img src="image 3.jpg"  alt="Prestige Barbers — beard trim and fade" loading="lazy"></div>
-        <div class="gi rev d4"><img src="image 4.jpg"  alt="Prestige Barbers — skin fade" loading="lazy"></div>
+        <div class="gi rev d1"><img src="IMG_1394.jpg" alt="Prestige Barbers — shop interior with red chairs" loading="lazy"></div>
+        <div class="gi rev d2"><img src="IMG_1393.jpg" alt="Prestige Barbers — hexagonal ceiling lights and ring light" loading="lazy"></div>
+        <div class="gi rev d3"><img src="IMG_1386.jpg" alt="Prestige Barbers — barber chairs and mirrors" loading="lazy"></div>
+        <div class="gi rev d4"><img src="IMG_1387.jpg" alt="Prestige Barbers — moody interior shot" loading="lazy"></div>
       </div>
       <p class="gallery-note rev">
         More work on our
@@ -1615,16 +1639,17 @@
     });
 
     /* ══════════════════════════════════════
-       HERO PARALLAX
+       HERO VIDEO AUTOPLAY
     ══════════════════════════════════════ */
-    const heroBg = document.getElementById('heroBg');
-    function onScroll() {
-      const y = window.scrollY;
-      if (y < window.innerHeight * 1.2) {
-        heroBg.style.transform = `translateY(${y * 0.35}px)`;
-      }
+    const heroVideo = document.getElementById('heroVideo');
+    if (heroVideo) {
+      heroVideo.muted = true;
+      heroVideo.play().catch(() => {
+        // Fallback: play on first user interaction
+        document.addEventListener('touchstart', () => heroVideo.play(), { once: true });
+        document.addEventListener('click', () => heroVideo.play(), { once: true });
+      });
     }
-    window.addEventListener('scroll', onScroll, { passive: true });
 
     /* ══════════════════════════════════════
        SCROLL REVEAL
